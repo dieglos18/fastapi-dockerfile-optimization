@@ -1,0 +1,14 @@
+# Use a full Python image (includes many unnecessary tools/libraries)
+FROM python:3.11
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Copy everything from the current directory (including .git, tests, unused files, etc.)
+COPY . .
+
+# Install dependencies (without caching optimization)
+RUN pip install -r requirements.txt
+
+# Run the FastAPI app using Uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
