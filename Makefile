@@ -2,25 +2,26 @@
 BAD_IMAGE=fastapi-bad
 GOOD_IMAGE=fastapi-good
 
-# Construye la imagen no optimizada
+# Builds the unoptimized image
 build-bad:
 	docker build -f Dockerfile.bad -t $(BAD_IMAGE) .
 
-# Construye la imagen optimizada
+# Builds the optimized image
 build-good:
 	docker build -f Dockerfile.good -t $(GOOD_IMAGE) .
 
-# Muestra los tamaños de las dos imágenes
+# Displays the sizes of both images (cross-platform)
 compare-sizes:
-	@echo "\n🔍 Tamaños de imágenes:"
-	@docker images | grep fastapi
+	@echo Image sizes:
+	@docker images --format "table {{.Repository}}\t{{.Size}}" | \
+		( grep fastapi || findstr fastapi )
 
-# Ejecuta ambas tareas de build y compara tamaños
+# Runs both build tasks and compares image sizes
 compare:
-	make build-bad
-	make build-good
-	make compare-sizes
+	$(MAKE) build-bad
+	$(MAKE) build-good
+	$(MAKE) compare-sizes
 
-# Elimina las imágenes creadas
+# Removes the created images
 clean:
-	docker rmi -f $(BAD_IMAGE) $(GOOD_IMAGE) || true
+	-docker rmi -f $(BAD_IMAGE) $(GOOD_IMAGE)
