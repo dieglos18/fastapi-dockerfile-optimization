@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Dockerfiles Comparison - FastAPI</title>
+   <style>
+      * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+      }
+
+      body {
+         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+         background: #0a1929;
+         min-height: 100vh;
+         padding: 20px;
+         color: #ffffff;
+      }
+
+      .container {
+         max-width: 1200px;
+         margin: 0 auto;
+         background: #1e3a5f;
+         border-radius: 12px;
+         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+         overflow: hidden;
+      }
+
+      .header {
+         background: #0a1929;
+         color: white;
+         padding: 40px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+
+      .header .logo-container {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 20px;
+         flex-wrap: wrap;
+      }
+
+      .header .logo-container>div {
+         text-align: left;
+      }
+
+      .header .docker-logo {
+         height: 60px;
+         width: auto;
+      }
+
+      .header h1 {
+         font-size: 2.5em;
+         margin: 0;
+         color: white;
+      }
+
+      .header p {
+         font-size: 1.1em;
+         opacity: 0.9;
+         margin-top: 10px;
+      }
+
+      .content {
+         padding: 40px;
+         background: #1e3a5f;
+         color: white;
+      }
+
+      .comparison-table {
+         width: 100%;
+         border-collapse: separate;
+         border-spacing: 0;
+         margin: 30px 0;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+         border-radius: 12px;
+         overflow: hidden;
+      }
+
+      .comparison-table thead {
+         background: #6c757d;
+         color: white;
+      }
+
+      .comparison-table th {
+         padding: 20px;
+         text-align: left;
+         font-weight: 600;
+         font-size: 1.1em;
+      }
+
+      .comparison-table thead th:first-child {
+         border-top-left-radius: 12px;
+      }
+
+      .comparison-table thead th:last-child {
+         border-top-right-radius: 12px;
+      }
+
+      .comparison-table tbody {
+         background: #2c3e50;
+      }
+
+      .comparison-table td {
+         padding: 20px;
+         border-bottom: 1px solid #3d4f63;
+         color: white;
+      }
+
+      .comparison-table tbody tr:hover {
+         background-color: #34495e;
+      }
+
+      .comparison-table tbody td small {
+         color: #b0b0b0;
+      }
+
+      .comparison-table tbody tr:last-child td {
+         border-bottom: none;
+      }
+
+      .comparison-table tbody tr:last-child td:first-child {
+         border-bottom-left-radius: 12px;
+      }
+
+      .comparison-table tbody tr:last-child td:last-child {
+         border-bottom-right-radius: 12px;
+      }
+
+      .bad {
+         color: #e74c3c;
+         font-weight: 600;
+      }
+
+      .good {
+         color: #27ae60;
+         font-weight: 600;
+      }
+
+      .feature-name {
+         font-weight: 600;
+         color: #ffffff;
+      }
+
+      .bad-cell {
+         background-color: rgba(231, 76, 60, 0.2);
+      }
+
+      .good-cell {
+         background-color: rgba(39, 174, 96, 0.2);
+      }
+
+      .metrics {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+         gap: 20px;
+         margin: 30px 0;
+      }
+
+      .metric-card {
+         background: #0a1929;
+         color: white;
+         padding: 25px;
+         border-radius: 8px;
+         text-align: center;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+         border: 1px solid #3d4f63;
+      }
+
+      .metric-card h3 {
+         font-size: 1.2em;
+         margin-bottom: 10px;
+      }
+
+      .metric-card .value {
+         font-size: 2em;
+         font-weight: bold;
+         margin: 10px 0;
+      }
+
+      .info-section {
+         background-color: #0a1929;
+         padding: 30px;
+         border-radius: 8px;
+         margin: 30px 0;
+         border: 1px solid #3d4f63;
+      }
+
+      .info-section h2 {
+         color: #ffffff;
+         margin-bottom: 15px;
+      }
+
+      .info-section ul {
+         list-style-position: inside;
+         line-height: 1.8;
+      }
+
+      .info-section li {
+         margin: 10px 0;
+         color: #e0e0e0;
+      }
+
+      .badge {
+         display: inline-block;
+         padding: 5px 12px;
+         border-radius: 20px;
+         font-size: 0.85em;
+         font-weight: 600;
+      }
+
+      .badge-bad {
+         background-color: #e74c3c;
+         color: white;
+      }
+
+      .badge-good {
+         background-color: #27ae60;
+         color: white;
+      }
+
+      @media (max-width: 768px) {
+         .header {
+            flex-direction: column;
+         }
+
+         .header .logo-container {
+            flex-direction: column;
+            gap: 10px;
+         }
+
+         .header h1 {
+            font-size: 1.8em;
+         }
+
+         .header .docker-logo {
+            height: 40px;
+         }
+
+         .comparison-table {
+            font-size: 0.9em;
+         }
+
+         .comparison-table th,
+         .comparison-table td {
+            padding: 12px;
+         }
+
+         .metrics {
+            grid-template-columns: 1fr;
+         }
+      }
+   </style>
+</head>
+
+<body>
+   <div class="container">
+      <div class="header">
+         <div class="logo-container">
+            <img src="/assets/Docker-Emblem.png" alt="Docker Logo" class="docker-logo">
+            <div>
+               <h1>Dockerfiles Comparison</h1>
+               <p>Detailed analysis: Dockerfile.bad vs Dockerfile.good</p>
+            </div>
+         </div>
+      </div>
+
+      <div class="content">
+         <div class="metrics">
+            <div class="metric-card">
+               <h3>Dockerfile.bad</h3>
+               <div class="value">~900MB</div>
+               <p>Unoptimized image</p>
+            </div>
+            <div class="metric-card">
+               <h3>Dockerfile.good</h3>
+               <div class="value">~150MB</div>
+               <p>Optimized image</p>
+            </div>
+            <div class="metric-card">
+               <h3>Savings</h3>
+               <div class="value">~83%</div>
+               <p>Size reduction</p>
+            </div>
+         </div>
+
+         <table class="comparison-table">
+            <thead>
+               <tr>
+                  <th>Feature</th>
+                  <th>Dockerfile.bad</th>
+                  <th>Dockerfile.good</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td class="feature-name">Base Image</td>
+                  <td class="bad-cell">
+                     <span class="bad">python:3.11</span><br>
+                     <small>Full image with unnecessary tools</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">python:3.11-slim</span><br>
+                     <small>Minimalist image, only essentials</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">Multi-stage Build</td>
+                  <td class="bad-cell">
+                     <span class="bad">No</span><br>
+                     <small>Single stage, includes build tools</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">Yes</span><br>
+                     <small>Builder/runtime separation, clean final image</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">File Copying</td>
+                  <td class="bad-cell">
+                     <span class="bad">COPY . .</span><br>
+                     <small>Copies everything (includes .git, tests, unused files)</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">COPY app ./app</span><br>
+                     <small>Only copies necessary code</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">Dependency Management</td>
+                  <td class="bad-cell">
+                     <span class="bad">pip install -r requirements.txt</span><br>
+                     <small>No optimization, unnecessary cache</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">pip install --no-cache-dir --user</span><br>
+                     <small>No cache, optimized installation</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">Layer Optimization</td>
+                  <td class="bad-cell">
+                     <span class="bad">Poor</span><br>
+                     <small>Unoptimized layers, no cleanup</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">Excellent</span><br>
+                     <small>apt cleanup, efficient layers</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">Final Size</td>
+                  <td class="bad-cell">
+                     <span class="bad">~900 MB</span><br>
+                     <small>Large and heavy image</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">~150 MB</span><br>
+                     <small>Compact and efficient image</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">Security</td>
+                  <td class="bad-cell">
+                     <span class="bad">Larger attack surface</span><br>
+                     <small>More packages = more vulnerabilities</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">Minimal surface</span><br>
+                     <small>Only essentials, more secure</small>
+                  </td>
+               </tr>
+               <tr>
+                  <td class="feature-name">Build Time</td>
+                  <td class="bad-cell">
+                     <span class="bad">Slower</span><br>
+                     <small>No efficient cache, more layers</small>
+                  </td>
+                  <td class="good-cell">
+                     <span class="good">Faster</span><br>
+                     <small>Optimized cache, fewer layers</small>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+
+         <div class="info-section">
+            <h2>📚 Best Practices Applied in Dockerfile.good</h2>
+            <ul>
+               <li><strong>Slim base image:</strong> Uses python:3.11-slim instead of the full image, significantly
+                  reducing the base size.</li>
+               <li><strong>Multi-stage build:</strong> Separates the build stage from the runtime stage, eliminating
+                  unnecessary build tools in the final image.</li>
+               <li><strong>Selective copying:</strong> Only copies necessary files (app/) instead of the entire
+                  directory.</li>
+               <li><strong>Dependency optimization:</strong> Uses --no-cache-dir and --user to avoid storing unnecessary
+                  cache.</li>
+               <li><strong>Layer cleanup:</strong> Removes apt lists after installing packages to reduce layer size.
+               </li>
+               <li><strong>Operation order:</strong> Copies requirements.txt first to better leverage Docker cache.</li>
+            </ul>
+         </div>
+
+         <div class="info-section">
+            <h2>⚠️ Issues in Dockerfile.bad</h2>
+            <ul>
+               <li><strong>Large base image:</strong> python:3.11 includes many unnecessary tools and libraries for
+                  production.</li>
+               <li><strong>No multi-stage:</strong> Build tools remain in the final image.</li>
+               <li><strong>Excessive copying:</strong> COPY . . includes unnecessary files like .git, tests,
+                  documentation, etc.</li>
+               <li><strong>Unnecessary cache:</strong> pip maintains cache that increases image size.</li>
+               <li><strong>No cleanup:</strong> Temporary files and package lists are not cleaned up.</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</body>
+
+</html>
