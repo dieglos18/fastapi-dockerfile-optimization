@@ -5,8 +5,7 @@ Hi there! Hope you’re doing great. When it comes to building Docker images, do
 Whether you’re deploying to production or just experimenting in development, optimizing your Docker images helps save resources, speeds up your CI/CD pipeline, and gets your app up and running faster.<br><br>
 
 <img width="1280" height="679" alt="Screenshot 2026-01-05 at 10 08 51 AM" src="https://github.com/user-attachments/assets/be87e237-d275-4da6-9828-ebcd777eb09c" />
-
----
+<br><br>
 
 ## Why Docker Image Optimization Matters?
 
