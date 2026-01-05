@@ -1,8 +1,12 @@
-# Dockerfile Optimization 🐳
+# Dockerfile Optimization 
 
 Hi there! Hope you’re doing great. When it comes to building Docker images, doing it efficiently is key to keeping your apps scalable, secure, and easy to maintain. If your Dockerfiles aren’t well organized, you might end up with bulky images, slow build times, more security risks, and longer deployments. This repo shows how following best practices can really make a difference when creating Docker images for a **FastAPI** app.
 
 Whether you’re deploying to production or just experimenting in development, optimizing your Docker images helps save resources, speeds up your CI/CD pipeline, and gets your app up and running faster.<br><br>
+
+<img width="1280" height="679" alt="Screenshot 2026-01-05 at 10 08 51 AM" src="https://github.com/user-attachments/assets/be87e237-d275-4da6-9828-ebcd777eb09c" />
+
+---
 
 ## Why Docker Image Optimization Matters?
 
@@ -70,6 +74,7 @@ make clean
 
 ## MakeFile Results
 
-![Screenshot 2025-05-24 182659](https://github.com/user-attachments/assets/8c856e7d-2f85-4e1e-840a-8a3ebc9efd0a)
+<img width="559" height="197" alt="Screenshot 2026-01-05 at 10 10 00 AM" src="https://github.com/user-attachments/assets/effb0102-fae7-444a-a366-23179f40433d" />
+
 
 
